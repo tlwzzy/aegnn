@@ -54,12 +54,12 @@ def radius_graph_numba(sample, r, delta_t_us, max_num_neighbors, return_intermed
     MAX_QUEUE_SIZE = 32
     width, height, _ = sample.max(0).astype("int16")+1
 
-    event_queues = np.zeros((MAX_QUEUE_SIZE, height, width), dtype="uint16")
+    event_queues = np.zeros((MAX_QUEUE_SIZE, height, width), dtype="uint32")
     events_per_pixel = np.zeros((height, width), dtype="uint8")
-    _fill_event_queues(sample, event_queues, events_per_pixel)
-
     connections_per_event = np.zeros(shape=(len(sample),), dtype="uint8")
-    edges = np.zeros((max_num_neighbors*len(sample)//2, 2), dtype="uint16")
+    edges = np.zeros((max_num_neighbors*len(sample)//2, 2), dtype="uint32")
+
+    _fill_event_queues(sample, event_queues, events_per_pixel)
     edges = _perform_radius_search(sample,
                                    event_queues,
                                    events_per_pixel,
