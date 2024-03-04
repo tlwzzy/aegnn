@@ -141,8 +141,12 @@ class NCaltech101(EventDataModule):
         t = data.pos[data.num_nodes // 2, 2]
         index1 = torch.clamp(torch.searchsorted(data.pos[:, 2].contiguous(), t) - 1, 0, data.num_nodes - 1)
         index0 = torch.clamp(torch.searchsorted(data.pos[:, 2].contiguous(), t-window_us) - 1, 0, data.num_nodes - 1)
+
+        ##################################################################################
+        number_of_nodes = data.num_nodes
+        ##################################################################################
         for key, item in data:
-            if torch.is_tensor(item) and item.size(0) == data.num_nodes and item.size(0) != 1:
+            if torch.is_tensor(item) and item.size(0) == number_of_nodes and item.size(0) != 1:
                 data[key] = item[index0:index1, :]
 
         # Coarsen graph by uniformly sampling n points from the event point cloud.
